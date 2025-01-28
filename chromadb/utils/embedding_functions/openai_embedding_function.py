@@ -1,3 +1,4 @@
+import httpx
 import logging
 from typing import Mapping, Optional, cast
 
@@ -18,6 +19,7 @@ class OpenAIEmbeddingFunction(EmbeddingFunction[Documents]):
         deployment_id: Optional[str] = None,
         default_headers: Optional[Mapping[str, str]] = None,
         dimensions: Optional[int] = None,
+        http_client: httpx.Client | None = None,
     ):
         """
         Initialize the OpenAIEmbeddingFunction.
@@ -78,10 +80,11 @@ class OpenAIEmbeddingFunction(EmbeddingFunction[Documents]):
                     api_version=api_version,
                     azure_endpoint=api_base,
                     default_headers=default_headers,
+                    http_client=http_client,
                 ).embeddings
             else:
                 self._client = openai.OpenAI(
-                    api_key=api_key, base_url=api_base, default_headers=default_headers
+                    api_key=api_key, base_url=api_base, default_headers=default_headers, http_client=http_client
                 ).embeddings
         else:
             self._client = openai.Embedding
